@@ -1,14 +1,10 @@
 # Voting app
 
----
-
 A simple distributed application running across multiple Docker containers.
 
 This repository is a clone of [dockersamples/example-voting-app](https://github.com/dockersamples/example-voting-app), created for learning and experimenting with Docker containers. It serves as a practical hands-on project to understand containerization.
 
 ## Architecture
-
----
 
 ![Architecture diagram](images/architecture.excalidraw.png)
 
@@ -22,8 +18,6 @@ This repository is a clone of [dockersamples/example-voting-app](https://github.
 
 ## Learning Objectives
 
----
-
 This repository is a simplified version of the original project, with the main goals of:
 
 - Learning Docker basics and commands.
@@ -34,8 +28,6 @@ This repository is a simplified version of the original project, with the main g
 - Automating the application setup with Docker Compose.
 
 ## Docker Basics
-
----
 
 ### **Containers**
 
@@ -52,8 +44,6 @@ This repository is a simplified version of the original project, with the main g
 - Docker images are stored in repositories, such as Docker Hub, from where they can be pulled to create new containers.
 
 ## **Some Useful Commands to Remember**
-
----
 
 ```bash
 docker run [image]
