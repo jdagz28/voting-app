@@ -97,4 +97,139 @@ docker inspect [container id]
 # Inspect container; internal IP address
 ```
 
-## Building the Voting App Manually
+## Building the App Manually
+We will build the app step-by-step by following the flow from the architecture diagram.
+
+1. **Build the voting-app**
+    - Navigate to the `vote` directory and build the voting-app:
+    
+    ```bash
+    docker build . -t voting-app
+    ```
+    
+    - Check if the image is locally available:
+    
+    ```bash
+    docker images
+    ```
+    
+    ```bash
+    docker run -p 5000:80 voting-app
+    ```
+    
+    - Check in your browser at http://localhost:5000 - you should see the webpage with options to vote for cat or dog.
+2. **Set up Redis**
+    
+    ```bash
+    docker run -d --name redis redis
+    ```
+    
+    - If Redis is not available locally, it will automatically download from Docker Hub.
+    - Check if it is running with:
+    
+    ```bash
+    docker ps
+    ```
+    
+3. **Build and run the worker app**
+    - Navigate to the `worker` directory and build the worker app:
+    
+    ```bash
+    docker build . -t worker-app
+    ```
+    
+    - Run the worker app, linking it to the Redis container:
+    
+    ```bash
+    docker run -d --name worker-app --link redis:redis worker-apps
+    ```
+    
+4. **Set up PostgreSQL**
+    
+    ```
+    docker run -d --name db -e POSTGRES_PASSWORD=postgres db
+    ```
+    
+    - Check if it is running with `docker ps`
+5. **Build and run the result app**
+    - Navigate to the `result` directory and build the result app:
+    
+    ```bash
+    docker build . -t result-app
+    ```
+    
+    - Run the result app, linking it to the PostgreSQL container:
+    
+    ```bash
+    docker run -d --name result-app -p 5001:80 --link db:db result-app
+    ```
+    
+    - Check in your browser at http://localhost:5001 to see the voting results in real-time.
+6. **Ensure all services are running**
+    
+    ```bash
+    docker ps
+    ```
+    
+    You should see containers for `voting-app`, `redis`, `worker-app`, `db`, and `result-app` all running.
+
+# Buiding the App Automatically with Docker 
+Docker Compose allows you to define and manage multi-container Docker applications using a single docker-compose.yml file. 
+
+1. Create a docker-compose.yml file with the following content:
+    ```yml
+    services:
+    redis:
+        image: redis
+
+    db:
+        image: postgres:15
+        environment:
+        POSTGRES_PASSWORD: postgres
+
+    vote:
+        image: voting-app
+        ports:
+        - 5000:80
+        links:
+        - redis
+
+    worker:
+        image: worker-app
+        links:
+        - redis
+        - db
+
+    result:
+        image: result-app
+        ports:
+        - 5001:80
+        links:
+        - db
+    ```
+    - **services**
+        - defines the different services that make up your application
+    - **image**
+        - specifies the Docker image to use
+    - **environment**
+        - sets environment variables. In this example, the PostgreSQL password.
+    - **links**
+        - link a service to another service
+    - **ports**
+        - maps port of the host to a port in the container
+
+2. Run the application with Docker Compose:
+    ```bash
+    docker-compose up 
+    ```
+3. Verify all services are running
+    ```bash
+    docker-compose ps
+    ```
+
+## Notes
+The voting application only accepts one vote per client browser. It does not register additional votes if a vote has already been submitted from a client.
+
+This isn't an example of a properly architected perfectly designed distributed app... it's just a simple
+example of the various types of pieces and languages you might see (queues, persistent data, etc), and how to
+deal with them in Docker at a basic level.
