@@ -4,9 +4,12 @@ A simple distributed application running across multiple Docker containers.
 
 This repository is a clone of [dockersamples/example-voting-app](https://github.com/dockersamples/example-voting-app), created for learning and experimenting with Docker containers. It serves as a practical hands-on project to understand containerization.
 
+<img src="images/vote.png" alt="Vote" style="border: 1px solid black;">
+<img src="images/results.png" alt="Results">
+
 ## Architecture
 
-![Architecture diagram](images/architecture.excalidraw.png)
+<img src="images/architecture.excalidraw.png" alt="Architecture diagram">
 
 *Diagram from original repository.*
 
